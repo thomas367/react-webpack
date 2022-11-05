@@ -13,7 +13,11 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "airbnb-base",
+        "prettier"
     ],
     "settings": {
         "import/resolver": {
