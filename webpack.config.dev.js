@@ -1,86 +1,83 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    entry: './src/index.react.js',
-    devtool: 'cheap-module-eval-source-map',
+    mode: 'development',
+    entry: './src/index.js',
+    devtool: 'eval-cheap-module-source-map',
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'bundle.js',
-        publicPath: '/'
+        publicPath: '/',
     },
     resolve: {
         modules: [
             path.resolve(process.cwd(), 'src'),
             path.resolve(process.cwd(), 'node_modules'),
-            path.resolve(process.cwd(), 'assets')
-        ]
+            path.resolve(process.cwd(), 'assets'),
+        ],
     },
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: ['babel-loader', 'eslint-loader']
+                use: ['babel-loader', 'eslint-loader'],
             },
             {
                 test: /\.[s]css$/,
                 use: [
-                    { loader: 'style-loader' },
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentName: '[local]--[hash:base64:5]'
+                                localIdentName: '[local]--[hash:base64:5]',
                             },
-                            sourceMap: true
-                        }
+                            sourceMap: true,
+                        },
                     },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                            sourceMap: true,
+                        },
+                    },
+                ],
             },
             {
-                test: /\.png|jpg$/,
-                include: path.join(__dirname, 'assets/images'),
-                loader: ['file-loader']
-            }
-        ]
+                test: /\.png|jpg|jpeg|gif|svg$/,
+                loader: 'file-loader',
+            },
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './public/index.html'
-        })
+            template: path.resolve(__dirname, './public/index.html'),
+        }),
+        new MiniCssExtractPlugin(),
     ],
     devServer: {
-        contentBase: path.join(__dirname, 'public'),
+        static: {
+            directory: path.join(__dirname, '/public/'),
+            publicPath: '/assets/',
+        },
         historyApiFallback: true,
         port: 3000,
-        open: true
+        open: true,
         // proxy: {
         //     '/api/*': 'http://localhost:5000'
         // }
-    }
+    },
     // stats: {
     //     modules: false,
     //     usedExports: false,
     //     children: false,
     //     entrypoints: true,
-    //     maxModules: 0,
     //     errors: true,
     //     warnings: true,
     //     moduleTrace: false,
     //     errorDetails: false,
     //     colors: true,
-    //     performance: false
-    // }
+    //     performance: false,
+    // },
 };

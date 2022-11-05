@@ -1,81 +1,86 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/index.react.js',
+    mode: 'production',
+    entry: './src/index.js',
     output: {
         path: path.join(__dirname, '/public/dist'),
         filename: 'bundle.js',
-        publicPath: '/'
+        publicPath: './',
     },
     resolve: {
         modules: [
             path.resolve(process.cwd(), 'src'),
             path.resolve(process.cwd(), 'node_modules'),
-            path.resolve(process.cwd(), 'assets')
-        ]
+            path.resolve(process.cwd(), 'assets'),
+        ],
     },
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: ['babel-loader', 'eslint-loader']
+                use: ['babel-loader', 'eslint-loader'],
             },
             {
                 test: /\.[s]css$/,
                 use: [
-                    { loader: 'style-loader' },
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentName: '[hash:base64:5]'
+                                localIdentName: '[hash:base64:5]',
                             },
-                            sourceMap: false
-                        }
+                            sourceMap: false,
+                        },
                     },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: false
-                        }
-                    }
-                ]
+                            sourceMap: false,
+                        },
+                    },
+                ],
             },
             {
-                test: /\.png|jpg$/,
+                test: /\.png|jpg|jpeg|gif|svg$/,
                 loader: 'file-loader',
                 options: {
-                    outputPath: 'images/',
-                    publicPath: '/dist/images'
-                }
-            }
-        ]
+                    outputPath: '/images/',
+                    publicPath: '/dist/images/',
+                },
+            },
+        ],
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
     },
     plugins: [
         new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['dist']
+            cleanOnceBeforeBuildPatterns: ['dist'],
         }),
-        new UglifyJSPlugin()
-    ]
+        new MiniCssExtractPlugin(),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, './public/index.html'),
+            inject: true,
+        }),
+    ],
     // stats: {
     //     modules: false,
     //     usedExports: false,
     //     children: false,
     //     entrypoints: true,
-    //     maxModules: 0,
     //     errors: true,
     //     warnings: true,
     //     moduleTrace: false,
     //     errorDetails: false,
     //     colors: true,
-    //     performance: false
-    // }
+    //     performance: false,
+    // },
 };
