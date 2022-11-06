@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavLink } from 'react-router-dom';
 
-function Navbar() {
+function Navbar(): ReactElement {
     return (
         <>
             <NavLink to="/componentOne">Component One</NavLink>&nbsp;

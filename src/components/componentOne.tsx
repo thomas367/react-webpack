@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactElement } from 'react';
 import { observer } from 'mobx-react';
 import { useStores } from 'stores/index';
 
-function ComponentTwo() {
+function ComponentOne(): ReactElement {
     const { notes: Notes } = useStores();
     const { text, setText } = Notes;
 
     useEffect(() => {
-        setText('Component Two. Mobx rocks!!!');
+        setText('Component One. Mobx & Typescript rocks!!!');
     }, []);
 
     return <p>{text}</p>;
 }
 
-export default observer(ComponentTwo);
+export default observer(ComponentOne);
