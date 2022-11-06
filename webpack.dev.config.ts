@@ -1,10 +1,13 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import 'webpack-dev-server';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
-module.exports = {
+const config: webpack.Configuration = {
     mode: 'development',
-    entry: './src/index.js',
+    entry: './src/index.tsx',
     devtool: 'eval-cheap-module-source-map',
     output: {
         publicPath: '/',
@@ -15,13 +18,19 @@ module.exports = {
             path.resolve(process.cwd(), 'node_modules'),
             path.resolve(process.cwd(), 'assets'),
         ],
+        extensions: ['.tsx', '.ts', '.js'],
     },
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(ts|tsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader', 'eslint-loader'],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
+                    },
+                },
             },
             {
                 test: /\.[s]css$/,
@@ -55,6 +64,9 @@ module.exports = {
             template: path.resolve(__dirname, './public/index.html'),
         }),
         new MiniCssExtractPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+            async: false,
+        }),
     ],
     devServer: {
         static: {
@@ -68,16 +80,18 @@ module.exports = {
         //     '/api/*': 'http://localhost:5000'
         // }
     },
-    // stats: {
-    //     modules: false,
-    //     usedExports: false,
-    //     children: false,
-    //     entrypoints: true,
-    //     errors: true,
-    //     warnings: true,
-    //     moduleTrace: false,
-    //     errorDetails: false,
-    //     colors: true,
-    //     performance: false,
-    // },
+    stats: {
+        modules: false,
+        usedExports: false,
+        children: false,
+        entrypoints: true,
+        errors: true,
+        warnings: true,
+        moduleTrace: false,
+        errorDetails: true,
+        colors: true,
+        performance: false,
+    },
 };
+
+export default config;
