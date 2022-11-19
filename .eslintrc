@@ -3,9 +3,10 @@
     "env": {
         "browser": true,
         "node": true,
-        "es6": true
+        "es6": true,
+        "jest/globals": true
     },
-    "plugins": ["react", "prettier"],
+    "plugins": ["react", "prettier", "jest"],
     "rules": {
         "no-console": 0,
         "linebreak-style": 0,
@@ -16,6 +17,7 @@
         "plugin:react/recommended",
         "plugin:import/errors",
         "plugin:import/warnings",
+        "plugin:jest/recommended",
         "airbnb-base",
         "prettier"
     ],
